@@ -1,8 +1,21 @@
+#include <string.h> 
+#include <stdlib.h> 
+#include <stdio.h>
+
+typedef enum { false, true } bool;
+
+int checkChoiceValidInput(int choice, int minNum, int maxNum);
 
 // code main here
+int main()
+{
     
     // Variables here
+    int menuChoice;
+    bool invalidInput = false;
 
+    int minNum = 1;
+    int maxNum = 10;
 
     // Ask for user input for options 1-3
 
@@ -13,8 +26,20 @@
         Press 1 to play a game
         Press 2 to change the max number
         Press 3 to quit
+
+        What would you like to do? : [user input]
         ---------------------------------------
         */
+
+    printf("---------------------------------------\n");
+    printf("Press 1 to play the game\n");
+    printf("Press 2 to change the max number\n");
+    printf("Press 3 to quit\n\n");
+    printf("What would you like to do? : ");
+    scanf("%i", &menuChoice);   
+
+    menuChoice = checkChoiceValidInput(menuChoice, 1, 3);
+    printf("---------------------------------------\n");
 
     
 
@@ -68,3 +93,29 @@
    /* option 3
    - Display nice message then end program with EXIT SUCCESS
    */
+
+}
+
+
+int checkChoiceValidInput(int choice, int minNum, int maxNum)
+{
+    bool isChoiceValid = false;
+
+    while(!isChoiceValid)
+    {
+            isChoiceValid = true;
+            if(choice >= minNum && choice <= maxNum)
+            {
+                fflush(stdin);
+                return choice;
+            }
+            else
+            {
+                fflush(stdin);
+                isChoiceValid = false;
+                printf("INVALID INPUT ~ Please enter the correct choice (%d-%d): ", minNum, maxNum);
+                scanf("%i", &choice); 
+            }
+
+    }
+}
