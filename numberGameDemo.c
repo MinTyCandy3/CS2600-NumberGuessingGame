@@ -135,6 +135,7 @@ int main()
             fp = fopen("maxNum.txt", "w+");
             maxNum = maxChoice;
             fprintf(fp, "%d", maxNum);
+            fclose(fp);
         }
         else if (menuChoice == 3)
         {
