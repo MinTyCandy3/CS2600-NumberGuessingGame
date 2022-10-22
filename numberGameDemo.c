@@ -17,6 +17,8 @@ int main()
     int menuChoice;
     int minNum = 1;
     int maxNum = 10;
+
+    const int MAXIMUM_MAXNUM = 20;
     
     while(true)
     {
@@ -24,6 +26,7 @@ int main()
         menuChoice = 0;
 
         printf(DASHES);
+        printf("Current Range: %i - %i\n", minNum, maxNum);
         printf("Press 1 to play the game\n");
         printf("Press 2 to change the max number\n");
         printf("Press 3 to quit\n\n");
@@ -44,7 +47,7 @@ int main()
             - Repeat until they win or enter 'q'
             */
             
-            printf("I have my number! Time to guess!\n");
+            printf("I have my number! Time to guess! (Enter 'q' if you want to leave the game.)\n\n");
             srand(time(NULL));
 
             bool leaveGame = false;
@@ -54,8 +57,6 @@ int main()
             do
             {
             
-                fflush(stdin);
-
                 printf("Guess a number between %d-%d: ", minNum, maxNum);
                 gets(userInput);
 
@@ -84,8 +85,6 @@ int main()
                     printf("Higher!\n\n");              
                 }
 
-                
-
             } while (true);
             
             
@@ -99,19 +98,17 @@ int main()
             - the maxiumum number the user can pick will be 20 (cannot be <= 0)
             *** - in a separate branch -> save_user_max_number, save the user's choice of max num
             */
+            int maxChoice;
 
-                /*
+            do
+            {
+                printf("What is the maximum number you would like to pick? (note: Max number is 20!)\n");
+                printf("Set max number: ");
+                scanf("%i", &maxChoice);
+            }
+            while(!checkChoiceValidInput(maxChoice, minNum, MAXIMUM_MAXNUM));
 
-                example output:
-                ---------------------------------------
-                What is the maximum number you would like to pick? (note: Max number is 20!)
-                19
-
-                Okay! The range is now 1 - 19
-                ---------------------------------------
-                [go back to menu output]
-                
-                */
+            maxNum = maxChoice;
         }
         else if (menuChoice == 3)
         {
