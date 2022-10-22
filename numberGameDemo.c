@@ -9,14 +9,38 @@ typedef enum { false, true } bool;
 
 bool checkChoiceValidInput(int choice, int minNum, int maxNum);
 
+/*
+
+gcc numberGameDemo.c
+
+*/
+
 // code main here
 int main()
 {
     // Variables here
-
     int menuChoice;
-    int minNum = 1;
-    int maxNum = 10;
+    const int minNum = 1;
+    int maxNum;
+
+    char buff[100];
+    FILE *fp;
+    fp = fopen("maxNum.txt", "r+");
+    if(fp == NULL)
+    {
+        fclose(fp);
+        fp = fopen("maxNum.txt", "w+");
+        // default max num is set to 10 if file doesn't exist
+        fprintf(fp, "%d", 10);
+        maxNum = 10;
+    }
+    else
+    {
+        fgets(buff, 100, (FILE*)fp);
+        maxNum = atoi(buff);
+    }
+    fclose(fp);
+
 
     const int MAXIMUM_MAXNUM = 20;
     
@@ -108,7 +132,9 @@ int main()
             }
             while(!checkChoiceValidInput(maxChoice, minNum, MAXIMUM_MAXNUM));
 
+            fp = fopen("maxNum.txt", "w+");
             maxNum = maxChoice;
+            fprintf(fp, "%d", maxNum);
         }
         else if (menuChoice == 3)
         {
@@ -117,17 +143,21 @@ int main()
             */
             printf("Goodbye! Thank you for playing!\n");
             printf(DASHES);
+
+            fclose(fp);
             return EXIT_SUCCESS;
         }
         else
         {
             printf("ERROR: Something went wrong when checking input of menuChoice.\n");
             printf(DASHES);
+            fclose(fp);
             return EXIT_FAILURE;
         }
 
     }
 
+    fclose(fp);
     return EXIT_FAILURE;
 }
 
