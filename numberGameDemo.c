@@ -1,18 +1,20 @@
 #include <string.h> 
 #include <stdlib.h> 
 #include <stdio.h>
+#include <time.h>
+
+#define DASHES "---------------------------------------\n"
 
 typedef enum { false, true } bool;
 
-int checkChoiceValidInput(int choice, int minNum, int maxNum);
+char checkChoiceValidInput(char choice, int minNum, int maxNum, bool canQuit);
 
 // code main here
 int main()
 {
     // Variables here
+    char menuChoiceInput;
     int menuChoice;
-    bool invalidInput = false;
-    bool doesUserWantToQuit = false;
 
     int minNum = 1;
     int maxNum = 10;
@@ -20,15 +22,15 @@ int main()
     while(true)
     {
         // Ask for user input for options 1-3
-        printf("---------------------------------------\n");
+        printf(DASHES);
         printf("Press 1 to play the game\n");
         printf("Press 2 to change the max number\n");
         printf("Press 3 to quit\n\n");
         printf("What would you like to do? : ");
-        scanf("%i", &menuChoice);   
+        scanf("%i", &menuChoiceInput);   
 
-        menuChoice = checkChoiceValidInput(menuChoice, 1, 3);
-        printf("---------------------------------------\n");
+        menuChoice = (int) checkChoiceValidInput(menuChoiceInput, 1, 3, false);
+        printf(DASHES);
 
         if(menuChoice == 1)
         {
@@ -37,25 +39,52 @@ int main()
             - Ask for user input
             - Repeat until they win or enter 'q'
             */
+            
+            printf("I have my number! Time to guess!\n");
+            srand(time(NULL));
 
-                /*
+            bool leaveGame = false;
+            int randomNum = (rand() % maxNum) + 1;
+            char userInput;
+            int userNum;
+            do
+            {
+            
+                fflush(stdin);
 
-                test case: number is 7
+                printf("Guess a number between %d-%d: ", minNum, maxNum);
+                scanf("%i", &userInput);
+                userInput = checkChoiceValidInput(userInput, minNum, maxNum, true);
+                userNum = (int) userInput;
 
-                example output:
-                ---------------------------------------
-                Guess a number between 1-10: 5
-                Higher!
+                if(!(userInput == 'q'))
+                {
+                    
+                    if(userNum == randomNum)
+                    {
+                        printf("Good job! The number was %d!\n", randomNum);
+                        break;
+                    }
+                    else if (userNum > randomNum)
+                    {
+                        printf("Lower!\n\n");
+                    }
+                    else
+                    {
+                        printf("Higher!\n\n");              
+                    }
 
-                Guess a number between 1-10: 11
-                INVALID INPUT: Number is not within the bounds!
+                }
+                else
+                {
+                    leaveGame = true;
+                }
 
-                Guess a number between 1-10: 7
-                Good job! The number was 7!
-                ---------------------------------------
-                [go back to menu output]
+            } while (!(leaveGame));
+            
+            
 
-                */
+            
         }
         else if (menuChoice == 2)
         {
@@ -83,12 +112,14 @@ int main()
             /* option 3
             - Display nice message then end program with EXIT SUCCESS
             */
-            printf("Goodbye! Thank you for playing!");
+            printf("Goodbye! Thank you for playing!\n");
+            printf(DASHES);
             return EXIT_SUCCESS;
         }
         else
         {
-            printf("ERROR: Something went wrong when checking input of menuChoice.");
+            printf("ERROR: Something went wrong when checking input of menuChoice.\n");
+            printf(DASHES);
             return EXIT_FAILURE;
         }
 
@@ -98,14 +129,20 @@ int main()
 }
 
 
-int checkChoiceValidInput(int choice, int minNum, int maxNum)
+char checkChoiceValidInput(char choice, int minNum, int maxNum, bool canQuit)
 {
     bool isChoiceValid = false;
 
     while(!isChoiceValid)
     {
             isChoiceValid = true;
-            if(choice >= minNum && choice <= maxNum)
+
+            if(canQuit && choice == 'q')
+            {
+                fflush(stdin);
+                return choice;
+            }
+            else if((int)choice >= minNum && (int)choice <= maxNum)
             {
                 fflush(stdin);
                 return choice;
@@ -114,7 +151,7 @@ int checkChoiceValidInput(int choice, int minNum, int maxNum)
             {
                 fflush(stdin);
                 isChoiceValid = false;
-                printf("INVALID INPUT ~ Please enter the correct choice (%d-%d): ", minNum, maxNum);
+                printf("INVALID INPUT ~ Please enter the correct number (%d-%d): ", minNum, maxNum);
                 scanf("%i", &choice); 
             }
 
