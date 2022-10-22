@@ -7,29 +7,33 @@
 
 typedef enum { false, true } bool;
 
-char checkChoiceValidInput(char choice, int minNum, int maxNum, bool canQuit);
+bool checkChoiceValidInput(int choice, int minNum, int maxNum);
 
 // code main here
 int main()
 {
     // Variables here
-    char menuChoiceInput;
-    int menuChoice;
 
+    int menuChoice;
     int minNum = 1;
     int maxNum = 10;
     
     while(true)
     {
         // Ask for user input for options 1-3
+        menuChoice = 0;
+
         printf(DASHES);
         printf("Press 1 to play the game\n");
         printf("Press 2 to change the max number\n");
         printf("Press 3 to quit\n\n");
-        printf("What would you like to do? : ");
-        scanf("%i", &menuChoiceInput);   
 
-        menuChoice = (int) checkChoiceValidInput(menuChoiceInput, 1, 3, false);
+        do
+        {
+            printf("What would you like to do? : ");
+            scanf("%i", &menuChoice);
+        }
+        while(!checkChoiceValidInput(menuChoice, 1, 3));
         printf(DASHES);
 
         if(menuChoice == 1)
@@ -45,7 +49,7 @@ int main()
 
             bool leaveGame = false;
             int randomNum = (rand() % maxNum) + 1;
-            char userInput;
+            char userInput[10];
             int userNum;
             do
             {
@@ -53,34 +57,36 @@ int main()
                 fflush(stdin);
 
                 printf("Guess a number between %d-%d: ", minNum, maxNum);
-                scanf("%i", &userInput);
-                userInput = checkChoiceValidInput(userInput, minNum, maxNum, true);
-                userNum = (int) userInput;
+                gets(userInput);
 
-                if(!(userInput == 'q'))
+                if ( userInput[0] == 'q' )
                 {
-                    
-                    if(userNum == randomNum)
-                    {
-                        printf("Good job! The number was %d!\n", randomNum);
-                        break;
-                    }
-                    else if (userNum > randomNum)
-                    {
-                        printf("Lower!\n\n");
-                    }
-                    else
-                    {
-                        printf("Higher!\n\n");              
-                    }
+                    break;
+                }
+                
+                userNum = atoi(userInput);
+                if(!checkChoiceValidInput(userNum, minNum, maxNum))
+                {
+                    continue;
+                }
 
+                if(userNum == randomNum)
+                {
+                    printf("Good job! The number was %d!\n", randomNum);
+                    break;
+                }
+                else if (userNum > randomNum)
+                {
+                    printf("Lower!\n\n");
                 }
                 else
                 {
-                    leaveGame = true;
+                    printf("Higher!\n\n");              
                 }
 
-            } while (!(leaveGame));
+                
+
+            } while (true);
             
             
 
@@ -129,7 +135,7 @@ int main()
 }
 
 
-char checkChoiceValidInput(char choice, int minNum, int maxNum, bool canQuit)
+bool checkChoiceValidInput(int choice, int minNum, int maxNum)
 {
     bool isChoiceValid = false;
 
@@ -137,22 +143,16 @@ char checkChoiceValidInput(char choice, int minNum, int maxNum, bool canQuit)
     {
             isChoiceValid = true;
 
-            if(canQuit && choice == 'q')
+            if(choice >= minNum && choice <= maxNum)
             {
                 fflush(stdin);
-                return choice;
-            }
-            else if((int)choice >= minNum && (int)choice <= maxNum)
-            {
-                fflush(stdin);
-                return choice;
+                return true;
             }
             else
             {
                 fflush(stdin);
-                isChoiceValid = false;
-                printf("INVALID INPUT ~ Please enter the correct number (%d-%d): ", minNum, maxNum);
-                scanf("%i", &choice); 
+                printf("INVALID INPUT ~ Please enter the correct number (%d-%d)\n\n", minNum, maxNum);
+                return false;
             }
 
     }
